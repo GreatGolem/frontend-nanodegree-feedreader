@@ -31,16 +31,37 @@ $(function() {
          * in the allFeeds object and ensures it has a URL defined
          * and that the URL is not empty.
          */
-
+         it('have url', function() {
+           allFeeds.forEach( function(feed) {
+             expect(feed.url).toBeDefined();
+             expect(feed.url).not.toBe('');
+           });
+         });
 
         /* TODO: Write a test that loops through each feed
          * in the allFeeds object and ensures it has a name defined
          * and that the name is not empty.
          */
+         it('have name', function() {
+           allFeeds.forEach( function(feed) {
+             expect(feed.name).toBeDefined();
+             expect(feed.name).not.toBe('');
+           });
+         });
     });
 
-
     /* TODO: Write a new test suite named "The menu" */
+    describe('The menu', function() {
+      it('is hidden by default', function() {
+        expect($('body').hasClass('menu-hidden')).toBe(true);
+      });
+      it('change visibility on click', function() {
+        $('.menu-icon-link').trigger('click');
+        expect($('body').hasClass('menu-hidden')).toBe(false);
+        $('.menu-icon-link').trigger('click');
+        expect($('body').hasClass('menu-hidden')).toBe(true);
+      });
+    });
 
         /* TODO: Write a test that ensures the menu element is
          * hidden by default. You'll have to analyze the HTML and
@@ -62,11 +83,37 @@ $(function() {
          * Remember, loadFeed() is asynchronous so this test will require
          * the use of Jasmine's beforeEach and asynchronous done() function.
          */
-
+    describe('Initial Entries', function() {
+      beforeEach(function(done) {
+        loadFeed(0, function() {
+          done();
+        });
+      });
+      it('has at least one element.', function(done) {
+        expect($('.feed').find('.entry').size()).toBeGreaterThan(0);
+        done();
+      });
+    });
     /* TODO: Write a new test suite named "New Feed Selection"
 
         /* TODO: Write a test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
+    describe('New Feed Selection', function() {
+      var oldFeed, newFeed;
+      beforeEach(function(done) {
+        loadFeed(0, function() {
+          oldFeed = $('.feed').text();
+          done();
+        });
+      });
+      it('changes content.', function(done) {
+        loadFeed(1, function() {
+          newFeed = $('.feed').text();
+          expect(oldFeed).not.toEqual(newFeed);
+          done();
+        });
+      });
+    });
 }());
